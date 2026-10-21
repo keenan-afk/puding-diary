@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puding Diary — Katalog Kelas Puding Online</title>
+
+  <!-- Google Fonts: Fraunces (Editorial Serif) & Plus Jakarta Sans (Clean Sans-Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Three.js r128 untuk Simulasi 3D Puding Hias Interaktif -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       PALET WARNA HASIL EKSTRAKSI VISUAL PUDING BUNGA (PUDING DIARY)
+       1. Pencahayaan meja & latar kertas hangat (--bg-warm-linen, --bg-cream-surface)
+       2. Dasar puding cokelat moka/karamel lembut (--pudding-mocha, --caramel-espresso)
+       3. Kelopak bunga puding rose-blush & putih susu (--petal-blush, --petal-ivory)
+       4. Aksen daun puding matcha/pistachio (--leaf-matcha)
+       ========================================================================== */
+    :root {
+      /* Warna Latar & Pencahayaan Sekitar */
+      --bg-warm-linen: #FAF6F2;
+      --bg-cream-surface: #F3ECE5;
+      --bg-card: #FFFDFB;
+
+      /* Warna Dasar Puding, Karamel & Kopi (Teks & Aksen Utama) */
+      --caramel-espresso: #382620;
+      --pudding-mocha: #7C5A4E;
+      --pudding-cocoa-muted: #694D43;
+      --accent-caramel: #8B573C;
+
+      /* Warna Kelopak Bunga & Daun pada Puding (Aksen Sekunder Organik) */
+      --petal-blush: #E498A3;
+      --petal-blush-soft: #F7E5E8;
+      --petal-ivory: #F8F3EE;
+      --leaf-matcha: #86923B;
+      --leaf-matcha-soft: #EFF1E2;
+
+      /* Garis & Bayangan Halus (Tanpa box-shadow tebal/gelap) */
+      --border-soft: #E5DAD0;
+      --border-hover: #C2A999;
+      --shadow-organic: 0 14px 34px -16px rgba(56, 38, 32, 0.09);
+      --shadow-organic-hover: 0 22px 42px -18px rgba(56, 38, 32, 0.15);
+
+      /* Tipografi & Transisi */
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ease-organic: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-warm-linen);
+      color: var(--caramel-espresso);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg-warm-linen);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ==========================================================================
+       1. HEADER MINIMALIS
+       ========================================================================== */
+    .site-header {
+      padding: 1.6rem 0;
+      border-bottom: 1px solid var(--border-soft);
+      background-color: var(--bg-warm-linen);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--caramel-espresso);
+      text-decoration: none;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--caramel-espresso);
+      background-color: transparent;
+      border: 1px solid var(--border-hover);
+      border-radius: 999px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.35s var(--ease-organic),
+                  color 0.35s var(--ease-organic),
+                  border-color 0.35s var(--ease-organic);
+    }
+
+    .nav-btn:hover {
+      background-color: var(--caramel-espresso);
+      color: var(--petal-ivory);
+      border-color: var(--caramel-espresso);
+    }
+
+    /* ==========================================================================
+       2. HERO SECTION (Editorial Split + Studio Dekorasi Puding 3D)
+       ========================================================================== */
+    .hero-section {
+      padding: 3.75rem 0 5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 3.25rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pudding-mocha);
+      margin-bottom: 1.15rem;
+      padding: 0.35rem 0.9rem;
+      background-color: var(--bg-cream-surface);
+      border-radius: 999px;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.15rem, 3.8vw, 3.25rem);
+      font-weight: 400;
+      line-height: 1.16;
+      letter-spacing: -0.02em;
+      color: var(--caramel-espresso);
+      margin-bottom: 1.35rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--pudding-mocha);
+    }
+
+    /* Deskripsi Utama Sesuai Bio Puding Diary */
+    .bio-tagline-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-left: 3px solid var(--pudding-mocha);
+      border-radius: 16px;
+      padding: 1.15rem 1.35rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-organic);
+    }
+
+    .bio-tagline-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .bio-tagline-list li {
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: var(--caramel-espresso);
+      letter-spacing: -0.01em;
+    }
+
+    .hero-lead {
+      font-size: 0.98rem;
+      color: var(--pudding-cocoa-muted);
+      max-width: 50ch;
+      margin-bottom: 2rem;
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.9rem 1.65rem;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--petal-ivory);
+      background-color: var(--caramel-espresso);
+      border: 1px solid var(--caramel-espresso);
+      border-radius: 999px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.35s var(--ease-organic),
+                  transform 0.35s var(--ease-organic);
+    }
+
+    .hero-cta:hover {
+      background-color: var(--pudding-mocha);
+      border-color: var(--pudding-mocha);
+      transform: translateY(-2px);
+    }
+
+    /* Bingkai Interaktif 3D Puding Decorator */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .studio-frame {
+      position: relative;
+      width: 100%;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 26px;
+      padding: 1rem;
+      box-shadow: var(--shadow-organic);
+    }
+
+    .studio-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+      padding: 0 0.35rem;
+    }
+
+    .studio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--caramel-espresso);
+    }
+
+    .studio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--leaf-matcha);
+    }
+
+    .studio-hint {
+      font-size: 0.75rem;
+      color: var(--pudding-cocoa-muted);
+    }
+
+    .canvas-stage {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 50% 38%, #FFFDFB 0%, #F2EAE1 100%);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .canvas-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stage-overlay-pill {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background-color: rgba(255, 253, 251, 0.88);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--caramel-espresso);
+      pointer-events: none;
+    }
+
+    .flower-count-pill {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: rgba(255, 253, 251, 0.88);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--pudding-mocha);
+      pointer-events: none;
+    }
+
+    /* Panel Kontrol Dekorasi Bunga 3D */
+    .decorator-controls {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      padding: 0.25rem 0.2rem 0.1rem;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .control-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--pudding-cocoa-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .tool-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.38rem;
+    }
+
+    .tool-btn {
+      padding: 0.38rem 0.72rem;
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: var(--caramel-espresso);
+      background-color: var(--bg-warm-linen);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-organic);
+    }
+
+    .tool-btn:hover {
+      border-color: var(--pudding-mocha);
+    }
+
+    .tool-btn.is-active {
+      background-color: var(--caramel-espresso);
+      color: var(--petal-ivory);
+      border-color: var(--caramel-espresso);
+    }
+
+    .color-group {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .color-swatch-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--border-soft);
+      cursor: pointer;
+      transition: transform 0.2s var(--ease-organic), border-color 0.2s ease;
+    }
+
+    .color-swatch-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch-btn.is-active {
+      border-color: var(--caramel-espresso);
+      transform: scale(1.14);
+      box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 3.5px var(--caramel-espresso);
+    }
+
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .mini-action-btn {
+      padding: 0.36rem 0.68rem;
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--pudding-mocha);
+      background-color: transparent;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .mini-action-btn:hover {
+      background-color: var(--bg-cream-surface);
+      color: var(--caramel-espresso);
+      border-color: var(--border-hover);
+    }
+
+    /* ==========================================================================
+       3. KATALOG KELAS (Grid 3 Kolom Interaktif)
+       ========================================================================== */
+    .catalog-section {
+      padding: 5.25rem 0 6.25rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .section-header {
+      max-width: 620px;
+      margin-bottom: 3.25rem;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pudding-mocha);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.85rem, 3vw, 2.5rem);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--caramel-espresso);
+      margin-bottom: 0.85rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.98rem;
+      color: var(--pudding-cocoa-muted);
+    }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+      align-items: stretch;
+    }
+
+    .course-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 2.25rem 1.9rem 2rem;
+      box-shadow: var(--shadow-organic);
+      transition: transform 0.45s var(--ease-organic),
+                  border-color 0.45s var(--ease-organic),
+                  box-shadow 0.45s var(--ease-organic);
+    }
+
+    .course-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-organic-hover);
+    }
+
+    .course-card.is-featured {
+      background-color: #FCF8F4;
+      border-color: var(--pudding-mocha);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -12px;
+      right: 1.5rem;
+      background-color: var(--accent-caramel);
+      color: var(--petal-ivory);
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.32rem 0.85rem;
+      border-radius: 999px;
+    }
+
+    .card-index {
+      display: inline-block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--pudding-mocha);
+      margin-bottom: 0.9rem;
+    }
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 500;
+      line-height: 1.28;
+      color: var(--caramel-espresso);
+      margin-bottom: 0.85rem;
+    }
+
+    .card-description {
+      font-size: 0.94rem;
+      color: var(--pudding-cocoa-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .topic-list {
+      list-style: none;
+      margin-bottom: 2.25rem;
+      border-top: 1px solid var(--border-soft);
+      padding-top: 1.25rem;
+    }
+
+    .topic-list li {
+      position: relative;
+      padding-left: 1.15rem;
+      font-size: 0.88rem;
+      color: var(--caramel-espresso);
+      margin-bottom: 0.65rem;
+      line-height: 1.55;
+    }
+
+    .topic-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--pudding-mocha);
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.9rem 1.25rem;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--caramel-espresso);
+      background-color: var(--bg-cream-surface);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.35s var(--ease-organic),
+                  color 0.35s var(--ease-organic),
+                  border-color 0.35s var(--ease-organic);
+    }
+
+    .card-cta .arrow {
+      display: inline-block;
+      transition: transform 0.35s var(--ease-organic);
+    }
+
+    .course-card:hover .card-cta {
+      background-color: var(--caramel-espresso);
+      color: var(--petal-ivory);
+    }
+
+    .course-card:hover .card-cta .arrow {
+      transform: translateX(4px);
+    }
+
+    /* ==========================================================================
+       4. FOOTER SEDERHANA
+       ========================================================================== */
+    .site-footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border-soft);
+      font-size: 0.875rem;
+      color: var(--pudding-cocoa-muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--caramel-espresso);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--pudding-mocha);
+      border-color: var(--pudding-mocha);
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS (Tablet & Mobile 1 Kolom)
+       ========================================================================== */
+    @media (max-width: 940px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hero-section {
+        padding: 2.75rem 0 4rem;
+      }
+
+      .catalog-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .canvas-stage {
+        height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. HEADER MINIMALIS -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand-logo" id="top">Puding Diary</a>
+      <a href="#katalog-kelas" class="nav-btn" data-scroll-target="katalog-kelas">Katalog Kelas</a>
+    </div>
+  </header>
+
+  <!-- 2. HERO SECTION (Deskripsi Bio + Model 3D Puding Interaktif) -->
+  <main>
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="hero-eyebrow">Kelas Puding Online · Puding Diary</span>
+          <h1 class="hero-title">
+            Meracik puding cantik dengan <em>detail tangan</em> yang bernilai tinggi.
+          </h1>
+
+          <!-- Deskripsi sesuai profil Puding Diary -->
+          <div class="bio-tagline-box" aria-label="Deskripsi Puding Diary">
+            <ul class="bio-tagline-list">
+              <li>dari dapur jadi cuan 🍮 ✨</li>
+              <li>spesialis puding hias Anti-Gagal 🌸</li>
+              <li>bongkar Trik puding bernilai jual tinggi 🤫</li>
+            </ul>
+          </div>
+
+          <p class="hero-lead">
+            Pelajari langkah demi langkah membuat puding lembut dan kreasi puding hias langsung dari dapur rumahmu. Sebelum memilih kelas, coba rangkai sendiri bunga di atas model puding 3D di samping.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#katalog-kelas" class="hero-cta" data-scroll-target="katalog-kelas">
+              <span>Lihat Katalog Kelas</span>
+              <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- STUDIO 3D INTERAKTIF: Pengunjung Bisa Mendekorasi Puding dengan Bunga -->
+        <div class="hero-visual">
+          <div class="studio-frame">
+            <div class="studio-top-bar">
+              <span class="studio-badge">
+                <span class="studio-dot"></span>
+                <span>Simulasi Dekorasi Puding 3D</span>
+              </span>
+              <span class="studio-hint">Klik puding untuk menaruh bunga · Geser untuk memutar</span>
+            </div>
+
+            <div class="canvas-stage" id="pudding-3d-stage" role="application" aria-label="Kanvas 3D Dekorasi Puding Bunga">
+              <div class="stage-overlay-pill" id="active-tool-indicator">Bentuk: Mawar Mekar</div>
+              <div class="flower-count-pill" id="flower-counter">14 Hiasan</div>
+            </div>
+
+            <div class="decorator-controls">
+              <!-- Pilihan Bentuk Bunga / Daun -->
+              <div class="control-row">
+                <span class="control-label">Pilih Bunga:</span>
+                <div class="tool-group" id="flower-type-group">
+                  <button type="button" class="tool-btn is-active" data-flower-type="rose">Mawar Mekar</button>
+                  <button type="button" class="tool-btn" data-flower-type="peony">Peony Kelopak</button>
+                  <button type="button" class="tool-btn" data-flower-type="blossom">Sakura Kecil</button>
+                  <button type="button" class="tool-btn" data-flower-type="leaf">Daun Matcha</button>
+                  <button type="button" class="tool-btn" data-flower-type="butterfly">Kupu-Kupu</button>
+                </div>
+              </div>
+
+              <!-- Pilihan Warna Kelopak & Aksi -->
+              <div class="control-row">
+                <div class="color-group" id="flower-color-group" aria-label="Warna Kelopak Bunga">
+                  <span class="control-label">Warna:</span>
+                  <button type="button" class="color-swatch-btn is-active" data-color="#E498A3" style="background-color: #E498A3;" title="Rose Blush"></button>
+                  <button type="button" class="color-swatch-btn" data-color="#F7F1EB" style="background-color: #F7F1EB;" title="Putih Susu / Ivory"></button>
+                  <button type="button" class="color-swatch-btn" data-color="#D97282" style="background-color: #D97282;" title="Pink الكورال / Coral"></button>
+                  <button type="button" class="color-swatch-btn" data-color="#E8D774" style="background-color: #E8D774;" title="Putik Kuning Lembut"></button>
+                  <button type="button" class="color-swatch-btn" data-color="#86923B" style="background-color: #86923B;" title="Hijau Daun Matcha"></button>
+                </div>
+
+                <div class="action-group">
+                  <button type="button" class="mini-action-btn" id="btn-jiggle-pudding">Goyangkan</button>
+                  <button type="button" class="mini-action-btn" id="btn-preset-bouquet">Susun Buket</button>
+                  <button type="button" class="mini-action-btn" id="btn-undo-flower">Urungkan</button>
+                  <button type="button" class="mini-action-btn" id="btn-clear-flowers">Bersihkan</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. KATALOG KELAS (3 KARTU INTERAKTIF) -->
+    <section id="katalog-kelas" class="catalog-section">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Katalog Kelas</p>
+          <h2 class="section-title">Pilih ruang belajar yang sesuai dengan ritmemu.</h2>
+          <p class="section-subtitle">
+            Materi video dan panduan tertulis disusun terstruktur, mulai dari fondasi tekstur anti-gagal hingga teknik cetak puding bernilai jual tinggi.
+          </p>
+        </div>
+
+        <div class="catalog-grid">
+          <!-- KARTU 1: KELAS BASIC PUDING -->
+          <article class="course-card">
+            <div>
+              <span class="card-index">Kelas 01</span>
+              <h3 class="card-title">Kelas Basic Puding</h3>
+              <p class="card-description">
+                Fondasi wajib untuk memahami karakter bahan dan menghasilkan puding yang lembut, stabil, serta rapi saat dipotong.
+              </p>
+              <ul class="topic-list">
+                <li>Teknik dasar tekstur lembut (<em>silky</em> &amp; <em>jiggly</em>) yang konsisten</li>
+                <li>Pengenalan fungsi tiap jenis bahan agar-agar, <em>jelly</em>, dan susu</li>
+                <li>Panduan takaran presisi untuk manis dan kekenyalan yang pas</li>
+                <li>Rahasia suhu masak dan penyimpanan anti-berair (<em>weeping</em>)</li>
+              </ul>
+            </div>
+            <a
+              href="https://wa.me/6281326422626"
+              class="card-cta js-wa-trigger"
+              data-course="Kelas Basic Puding"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Daftar Kelas Ini</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <!-- KARTU 2: KELAS REPLIKA PUDING KOPI & ROKOK -->
+          <article class="course-card">
+            <div>
+              <span class="card-index">Kelas 02</span>
+              <h3 class="card-title">Kelas Replika Puding Kopi &amp; Rokok</h3>
+              <p class="card-description">
+                Eksplorasi seni <em>art pudding</em> dengan tampilan menyerupai objek asli untuk hantaran dan pesanan berkarakter unik.
+              </p>
+              <ul class="topic-list">
+                <li>Teknik <em>hyper-realistic art pudding</em> dari dasar hingga tahap akhir</li>
+                <li>Pencampuran warna detail untuk efek busa kopi, abu, dan batang rokok</li>
+                <li>Cetak bentuk presisi menyerupai cangkir kopi dan asbak/rokok asli</li>
+                <li>Tips perakitan antar-lapisan agar menempel kuat tanpa merusak detail</li>
+              </ul>
+            </div>
+            <a
+              href="https://wa.me/6281326422626"
+              class="card-cta js-wa-trigger"
+              data-course="Kelas Replika Puding Kopi & Rokok"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Daftar Kelas Ini</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </article>
+
+          <!-- KARTU 3: KELAS BUNDLING (ALL-ACCESS) -->
+          <article class="course-card is-featured">
+            <span class="featured-badge">Paling Diminati</span>
+            <div>
+              <span class="card-index">Kelas 03 · Paket Lengkap</span>
+              <h3 class="card-title">Kelas Bundling (All-Access)</h3>
+              <p class="card-description">
+                Paket menyeluruh untuk menguasai fondasi tekstur dasar sekaligus keterampilan membuat puding replika dengan biaya lebih hemat.
+              </p>
+              <ul class="topic-list">
+                <li>Akses penuh seluruh materi <strong>Kelas Basic Puding</strong></li>
+                <li>Akses penuh seluruh materi <strong>Kelas Replika Puding Kopi &amp; Rokok</strong></li>
+                <li>Biaya pendaftaran bundel lebih hemat dibanding kelas satuan</li>
+                <li>Konsultasi kendala praktik langsung bersama dapur Puding Diary</li>
+              </ul>
+            </div>
+            <a
+              href="https://wa.me/6281326422626"
+              class="card-cta js-wa-trigger"
+              data-course="Kelas Bundling (All-Access)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Daftar Kelas Ini</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 4. FOOTER SEDERHANA -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Puding Diary. Dibuat dengan hangat dari dapur kami.</p>
+      <div class="footer-links">
+        <a
+          href="https://instagram.com/pudingdiary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Instagram @pudingdiary
+        </a>
+        <a
+          href="https://wa.me/6281326422626?text=Halo%20admin%20Puding%20Diary%2C%20saya%20ingin%20bertanya%20seputar%20katalog%20kelas%20puding%20online."
+          id="footer-wa-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Kontak WhatsApp
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- VANILLA JAVASCRIPT: Integrasi WhatsApp, Smooth Scroll & Model 3D Puding Bunga -->
+  <script>
+    (function () {
+      /* ======================================================================
+         A. INTEGRASI WHATSAPP OTOMATIS (6281326422626)
+         ====================================================================== */
+      const WHATSAPP_NUMBER = '6281326422626';
+
+      const courseMessages = {
+        'Kelas Basic Puding':
+          'Halo admin Puding Diary, saya tertarik mendaftar Kelas Basic Puding. Boleh info detail jadwal dan biayanya?',
+        'Kelas Replika Puding Kopi & Rokok':
+          'Halo admin Puding Diary, saya tertarik mendaftar Kelas Replika Puding Kopi & Rokok. Boleh info detail jadwal dan biayanya?',
+        'Kelas Bundling (All-Access)':
+          'Halo admin Puding Diary, saya tertarik mendaftar Kelas Bundling (All-Access). Boleh info detail jadwal dan biayanya?'
+      };
+
+      const waButtons = document.querySelectorAll('.js-wa-trigger');
+      waButtons.forEach(function (button) {
+        const courseName = button.getAttribute('data-course') || 'Kelas Puding Online';
+        const messageText =
+          courseMessages[courseName] ||
+          'Halo admin Puding Diary, saya tertarik mendaftar ' +
+            courseName +
+            '. Boleh info detail jadwal dan biayanya?';
+
+        const waUrl =
+          'https://wa.me/' +
+          WHATSAPP_NUMBER +
+          '?text=' +
+          encodeURIComponent(messageText);
+
+        button.setAttribute('href', waUrl);
+      });
+
+      /* ======================================================================
+         B. SMOOTH SCROLL NAVIGASI INTERNAL
+         ====================================================================== */
+      const scrollTriggers = document.querySelectorAll('[data-scroll-target]');
+      scrollTriggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+          const targetId = trigger.getAttribute('data-scroll-target');
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            event.preventDefault();
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      /* ======================================================================
+         C. SIMULASI 3D DEKORASI PUDING BUNGA (THREE.JS)
+         ====================================================================== */
+      const stageEl = document.getElementById('pudding-3d-stage');
+      if (!stageEl || typeof THREE === 'undefined') return;
+
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(
+        38,
+        stageEl.clientWidth / stageEl.clientHeight,
+        0.1,
+        100
+      );
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(stageEl.clientWidth, stageEl.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      stageEl.appendChild(renderer.domElement);
+
+      // Pencahayaan Hangat Studio Kuliner
+      const ambientLight = new THREE.AmbientLight(0xfff8f0, 0.78);
+      scene.add(ambientLight);
+
+      const mainLight = new THREE.DirectionalLight(0xfff5e8, 0.85);
+      mainLight.position.set(5, 9, 6);
+      mainLight.castShadow = true;
+      mainLight.shadow.mapSize.width = 1024;
+      mainLight.shadow.mapSize.height = 1024;
+      scene.add(mainLight);
+
+      const fillLight = new THREE.DirectionalLight(0xf7e5e8, 0.38);
+      fillLight.position.set(-6, 5, -4);
+      scene.add(fillLight);
+
+      // Grup Utama Puding (agar bisa bergoyang / jiggle secara organik)
+      const puddingRoot = new THREE.Group();
+      scene.add(puddingRoot);
+
+      // 1. Alas Piring Keramik Hangat
+      const plateGeo = new THREE.CylinderGeometry(3.35, 3.05, 0.14, 64);
+      const plateMat = new THREE.MeshStandardMaterial({
+        color: 0xf7f2ec,
+        roughness: 0.35,
+        metalness: 0.05
+      });
+      const plateMesh = new THREE.Mesh(plateGeo, plateMat);
+      plateMesh.position.y = -0.58;
+      plateMesh.receiveShadow = true;
+      puddingRoot.add(plateMesh);
+
+      // 2. Loyang Foil Berlekuk (Fluted Tart Pan seperti di foto)
+      const panGroup = new THREE.Group();
+      const panBaseGeo = new THREE.CylinderGeometry(2.85, 2.52, 0.92, 64, 1, false);
+      const panMat = new THREE.MeshStandardMaterial({
+        color: 0xd8d4cf,
+        roughness: 0.28,
+        metalness: 0.75
+      });
+      const panBase = new THREE.Mesh(panBaseGeo, panMat);
+      panBase.position.y = -0.05;
+      panBase.castShadow = true;
+      panBase.receiveShadow = true;
+      panGroup.add(panBase);
+
+      // Bibir Loyang Foil Berlekuk
+      const rimTorGeo = new THREE.TorusGeometry(2.84, 0.11, 16, 72);
+      const rimMesh = new THREE.Mesh(rimTorGeo, panMat);
+      rimMesh.rotation.x = Math.PI / 2;
+      rimMesh.position.y = 0.42;
+      panGroup.add(rimMesh);
+
+      // Detail Lekukan Dinding Loyang
+      const fluteCount = 44;
+      const fluteGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.88, 10);
+      for (let i = 0; i < fluteCount; i++) {
+        const angle = (i / fluteCount) * Math.PI * 2;
+        const flute = new THREE.Mesh(fluteGeo, panMat);
+        flute.position.set(
+          Math.cos(angle) * 2.75,
+          -0.02,
+          Math.sin(angle) * 2.75
+        );
+        flute.rotation.z = -Math.cos(angle) * 0.18;
+        flute.rotation.x = Math.sin(angle) * 0.18;
+        panGroup.add(flute);
+      }
+      puddingRoot.add(panGroup);
+
+      // 3. Dasar Puding Cokelat Moka Lembut (Permukaan Klik Dekorasi)
+      const puddingGeo = new THREE.CylinderGeometry(2.68, 2.45, 0.86, 64);
+      const puddingMat = new THREE.MeshPhysicalMaterial({
+        color: 0x7c5a4e,
+        roughness: 0.22,
+        metalness: 0.02,
+        clearcoat: 0.65,
+        clearcoatRoughness: 0.18
+      });
+      const puddingSurface = new THREE.Mesh(puddingGeo, puddingMat);
+      puddingSurface.position.y = 0.02;
+      puddingSurface.receiveShadow = true;
+      puddingRoot.add(puddingSurface);
+
+      // Lapisan Bening Jelly Tipis di Atas Puding (Glossy Glaze)
+      const glazeGeo = new THREE.CylinderGeometry(2.66, 2.66, 0.04, 64);
+      const glazeMat = new THREE.MeshPhysicalMaterial({
+        color: 0x8f6b5e,
+        transparent: true,
+        opacity: 0.45,
+        roughness: 0.12,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.08
+      });
+      const glazeMesh = new THREE.Mesh(glazeGeo, glazeMat);
+      glazeMesh.position.y = 0.44;
+      puddingRoot.add(glazeMesh);
+
+      // Grup Khusus Hiasan Bunga di Atas Puding
+      const toppingsGroup = new THREE.Group();
+      puddingRoot.add(toppingsGroup);
+
+      // State Dekorasi Saat Ini
+      let currentFlowerType = 'rose';
+      let currentColorHex = '#E498A3';
+      const placedToppings = [];
+      const animatingToppings = [];
+
+      // Efek Goyangan (Jiggle Physics)
+      let jiggleTime = 0;
+      let jiggleIntensity = 0;
+
+      function triggerJiggle(strength) {
+        jiggleIntensity = Math.min(0.14, jiggleIntensity + (strength || 0.06));
+      }
+
+      // Helper Material Kelopak Puding Susu/Jelly
+      function createPetalMaterial(hexStr, roughnessVal) {
+        return new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color(hexStr),
+          roughness: roughnessVal !== undefined ? roughnessVal : 0.28,
+          metalness: 0.01,
+          clearcoat: 0.55,
+          clearcoatRoughness: 0.22
+        });
+      }
+
+      // Generator 3D Mawar Mekar (Layered 3D Rose)
+      function buildRoseMesh(colorHex) {
+        const group = new THREE.Group();
+        const outerMat = createPetalMaterial(colorHex);
+        const innerColor = new THREE.Color(colorHex).lerp(new THREE.Color('#FFFDFB'), 0.38);
+        const innerMat = createPetalMaterial('#' + innerColor.getHexString());
+
+        const rings = [
+          { count: 5, radius: 0.11, scale: 0.13, tilt: 0.35, y: 0.08, mat: innerMat },
+          { count: 7, radius: 0.21, scale: 0.17, tilt: 0.65, y: 0.06, mat: innerMat },
+          { count: 9, radius: 0.32, scale: 0.21, tilt: 0.95, y: 0.04, mat: outerMat }
+        ];
+
+        const petalGeo = new THREE.SphereGeometry(1, 14, 12);
+        petalGeo.scale(1.0, 0.32, 0.78);
+
+        rings.forEach(function (ring, rIdx) {
+          for (let i = 0; i < ring.count; i++) {
+            const angle = (i / ring.count) * Math.PI * 2 + rIdx * 0.4;
+            const petal = new THREE.Mesh(petalGeo, ring.mat);
+            petal.scale.setScalar(ring.scale);
+            petal.position.set(
+              Math.cos(angle) * ring.radius,
+              ring.y,
+              Math.sin(angle) * ring.radius
+            );
+            petal.rotation.y = -angle + Math.PI / 2;
+            petal.rotation.x = ring.tilt;
+            petal.castShadow = true;
+            group.add(petal);
+          }
+        });
+
+        // Kuncup Tengah
+        const budGeo = new THREE.SphereGeometry(0.09, 12, 10);
+        const bud = new THREE.Mesh(budGeo, innerMat);
+        bud.position.y = 0.09;
+        group.add(bud);
+
+        return group;
+      }
+
+      // Generator 3D Peony Kelopak (Two-tone Lush Peony)
+      function buildPeonyMesh(colorHex) {
+        const group = new THREE.Group();
+        const outerMat = createPetalMaterial(colorHex);
+        const creamColor = new THREE.Color(colorHex).lerp(new THREE.Color('#FAF5F0'), 0.55);
+        const innerMat = createPetalMaterial('#' + creamColor.getHexString());
+        const stamenMat = createPetalMaterial('#F2C6CE', 0.35);
+
+        const petalGeo = new THREE.SphereGeometry(1, 14, 12);
+        petalGeo.scale(1.1, 0.26, 0.85);
+
+        // Kelopak Luar
+        for (let i = 0; i < 10; i++) {
+          const angle = (i / 10) * Math.PI * 2;
+          const petal = new THREE.Mesh(petalGeo, outerMat);
+          petal.scale.setScalar(0.23);
+          petal.position.set(Math.cos(angle) * 0.34, 0.04, Math.sin(angle) * 0.34);
+          petal.rotation.y = -angle + Math.PI / 2;
+          petal.rotation.x = 1.05;
+          petal.castShadow = true;
+          group.add(petal);
+        }
+
+        // Kelopak Dalam Putih Krim
+        for (let i = 0; i < 8; i++) {
+          const angle = (i / 8) * Math.PI * 2 + 0.3;
+          const petal = new THREE.Mesh(petalGeo, innerMat);
+          petal.scale.setScalar(0.18);
+          petal.position.set(Math.cos(angle) * 0.21, 0.08, Math.sin(angle) * 0.21);
+          petal.rotation.y = -angle + Math.PI / 2;
+          petal.rotation.x = 0.72;
+          petal.castShadow = true;
+          group.add(petal);
+        }
+
+        // Putik Berbutir di Tengah (seperti di foto puding asli)
+        const dotGeo = new THREE.SphereGeometry(0.032, 8, 8);
+        for (let i = 0; i < 9; i++) {
+          const r = i === 0 ? 0 : 0.065;
+          const a = (i / 8) * Math.PI * 2;
+          const dot = new THREE.Mesh(dotGeo, stamenMat);
+          dot.position.set(Math.cos(a) * r, 0.11, Math.sin(a) * r);
+          group.add(dot);
+        }
+
+        return group;
+      }
+
+      // Generator 3D Bunga Sakura Kecil (5 Kelopak)
+      function buildBlossomMesh(colorHex) {
+        const group = new THREE.Group();
+        const petalMat = createPetalMaterial(colorHex);
+        const centerMat = createPetalMaterial('#E8C56B');
+
+        const petalGeo = new THREE.SphereGeometry(1, 12, 10);
+        petalGeo.scale(0.95, 0.28, 0.65);
+
+        for (let i = 0; i < 5; i++) {
+          const angle = (i / 5) * Math.PI * 2;
+          const petal = new THREE.Mesh(petalGeo, petalMat);
+          petal.scale.setScalar(0.16);
+          petal.position.set(Math.cos(angle) * 0.17, 0.04, Math.sin(angle) * 0.17);
+          petal.rotation.y = -angle;
+          petal.rotation.z = 0.22;
+          petal.castShadow = true;
+          group.add(petal);
+        }
+
+        const centerGeo = new THREE.SphereGeometry(0.055, 10, 10);
+        const center = new THREE.Mesh(centerGeo, centerMat);
+        center.position.y = 0.065;
+        group.add(center);
+
+        return group;
+      }
+
+      // Generator 3D Daun Matcha & Ranting Kuncup
+      function buildLeafMesh(colorHex) {
+        const group = new THREE.Group();
+        const leafColor = colorHex === '#E498A3' ? '#86923B' : colorHex;
+        const leafMat = createPetalMaterial(leafColor, 0.32);
+
+        const leafGeo = new THREE.SphereGeometry(1, 12, 10);
+        leafGeo.scale(1.35, 0.24, 0.52);
+
+        const offsets = [
+          { x: 0, z: 0, rot: 0, s: 0.17 },
+          { x: -0.14, z: 0.08, rot: 0.6, s: 0.13 },
+          { x: 0.14, z: 0.08, rot: -0.6, s: 0.13 }
+        ];
+
+        offsets.forEach(function (cfg) {
+          const leaf = new THREE.Mesh(leafGeo, leafMat);
+          leaf.scale.setScalar(cfg.s);
+          leaf.position.set(cfg.x, 0.035, cfg.z);
+          leaf.rotation.y = cfg.rot;
+          leaf.rotation.z = 0.25;
+          leaf.castShadow = true;
+          group.add(leaf);
+        });
+
+        return group;
+      }
+
+      // Generator 3D Kupu-Kupu Krim Putih (seperti detail di foto Puding Diary)
+      function buildButterflyMesh(colorHex) {
+        const group = new THREE.Group();
+        const wingMat = createPetalMaterial(colorHex || '#F8F3EE', 0.22);
+
+        const wingGeo = new THREE.SphereGeometry(1, 12, 10);
+        wingGeo.scale(1.1, 0.15, 0.75);
+
+        const leftWing = new THREE.Mesh(wingGeo, wingMat);
+        leftWing.scale.setScalar(0.16);
+        leftWing.position.set(-0.11, 0.09, 0);
+        leftWing.rotation.z = 0.48;
+        group.add(leftWing);
+
+        const rightWing = new THREE.Mesh(wingGeo, wingMat);
+        rightWing.scale.setScalar(0.16);
+        rightWing.position.set(0.11, 0.09, 0);
+        rightWing.rotation.z = -0.48;
+        group.add(rightWing);
+
+        const bodyGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.22, 8);
+        const body = new THREE.Mesh(bodyGeo, wingMat);
+        body.rotation.x = Math.PI / 2;
+        body.position.y = 0.06;
+        group.add(body);
+
+        return group;
+      }
+
+      function updateCounterUI() {
+        const counterEl = document.getElementById('flower-counter');
+        if (counterEl) {
+          counterEl.textContent = placedToppings.length + ' Hiasan';
+        }
+      }
+
+      function addToppingAt(x, z, type, colorHex, customScale) {
+        let mesh;
+        if (type === 'peony') {
+          mesh = buildPeonyMesh(colorHex);
+        } else if (type === 'blossom') {
+          mesh = buildBlossomMesh(colorHex);
+        } else if (type === 'leaf') {
+          mesh = buildLeafMesh(colorHex);
+        } else if (type === 'butterfly') {
+          mesh = buildButterflyMesh(colorHex);
+        } else {
+          mesh = buildRoseMesh(colorHex);
+        }
+
+        mesh.position.set(x, 0.45, z);
+        mesh.rotation.y = Math.random() * Math.PI * 2;
+
+        const targetScale = customScale || (0.88 + Math.random() * 0.24);
+        mesh.scale.setScalar(0.01);
+
+        toppingsGroup.add(mesh);
+        placedToppings.push(mesh);
+        animatingToppings.push({
+          mesh: mesh,
+          current: 0.01,
+          target: targetScale
+        });
+
+        updateCounterUI();
+      }
+
+      // Susunan Awal Buket Bulan Sabit (Menyerupai Foto Puding Bunga Asli)
+      function populatePresetBouquet() {
+        while (placedToppings.length > 0) {
+          const item = placedToppings.pop();
+          toppingsGroup.remove(item);
+        }
+
+        const presetItems = [
+          // Bunga Utama di Sisi Kiri & Bawah (Bulan Sabit)
+          { x: -1.35, z: 0.15, type: 'peony', color: '#F7F1EB', scale: 1.22 },
+          { x: -0.65, z: 1.15, type: 'peony', color: '#E498A3', scale: 1.18 },
+          { x: 0.25, z: 1.48, type: 'rose', color: '#E498A3', scale: 1.12 },
+          { x: -0.35, z: 0.18, type: 'peony', color: '#E498A3', scale: 1.05 },
+          { x: -0.45, z: -0.82, type: 'peony', color: '#D97282', scale: 1.08 },
+          { x: -1.18, z: -0.85, type: 'rose', color: '#F7F1EB', scale: 0.96 },
+          { x: -0.68, z: -1.65, type: 'rose', color: '#D97282', scale: 1.02 },
+          { x: -1.85, z: -0.42, type: 'rose', color: '#E498A3', scale: 0.92 },
+          { x: -1.68, z: 0.98, type: 'rose', color: '#E498A3', scale: 0.92 },
+          { x: 0.88, z: 1.12, type: 'rose', color: '#F7F1EB', scale: 0.95 },
+          { x: 0.42, z: 0.68, type: 'blossom', color: '#D97282', scale: 1.05 },
+          { x: -0.88, z: 0.48, type: 'blossom', color: '#F7F1EB', scale: 0.95 },
+          { x: -0.15, z: 0.72, type: 'blossom', color: '#F7F1EB', scale: 0.92 },
+          // Daun Matcha & Kuncup di Tepi Kanan & Sela Bunga
+          { x: 0.45, z: -1.45, type: 'leaf', color: '#86923B', scale: 1.05 },
+          { x: 1.25, z: -1.25, type: 'leaf', color: '#86923B', scale: 0.95 },
+          { x: 1.65, z: 0.35, type: 'leaf', color: '#86923B', scale: 1.05 },
+          { x: 1.45, z: -0.35, type: 'leaf', color: '#86923B', scale: 0.92 },
+          { x: 0.25, z: -0.25, type: 'blossom', color: '#E8D774', scale: 0.85 },
+          { x: -1.15, z: 0.65, type: 'butterfly', color: '#F7F1EB', scale: 1.0 }
+        ];
+
+        presetItems.forEach(function (item) {
+          addToppingAt(item.x, item.z, item.type, item.color, item.scale);
+        });
+        triggerJiggle(0.08);
+      }
+
+      populatePresetBouquet();
+
+      // Kontrol Kamera Orbit Sederhana (Drag untuk Memutar, Klik untuk Menaruh Bunga)
+      let camAzimuth = 0.25;
+      let camElevation = 0.92;
+      const camDistance = 7.4;
+
+      function updateCameraPosition() {
+        camera.position.x = camDistance * Math.sin(camElevation) * Math.sin(camAzimuth);
+        camera.position.y = camDistance * Math.cos(camElevation);
+        camera.position.z = camDistance * Math.sin(camElevation) * Math.cos(camAzimuth);
+        camera.lookAt(0, 0.1, 0);
+      }
+      updateCameraPosition();
+
+      const raycaster = new THREE.Raycaster();
+      const pointerNDC = new THREE.Vector2();
+      let isDragging = false;
+      let pointerDownPos = { x: 0, y: 0 };
+      let prevPointerPos = { x: 0, y: 0 };
+
+      stageEl.addEventListener('pointerdown', function (e) {
+        isDragging = true;
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+        prevPointerPos = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('pointermove', function (e) {
+        if (!isDragging) return;
+        const dx = e.clientX - prevPointerPos.x;
+        const dy = e.clientY - prevPointerPos.y;
+        prevPointerPos = { x: e.clientX, y: e.clientY };
+
+        camAzimuth -= dx * 0.008;
+        camElevation = Math.max(0.35, Math.min(1.28, camElevation - dy * 0.006));
+        updateCameraPosition();
+      });
+
+      window.addEventListener('pointerup', function (e) {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const moveDist = Math.hypot(
+          e.clientX - pointerDownPos.x,
+          e.clientY - pointerDownPos.y
+        );
+
+        // Jika pengguna melakukan klik/tap singkat pada kanvas, tambahkan bunga di titik puding
+        if (moveDist < 6 && e.target === renderer.domElement) {
+          const rect = renderer.domElement.getBoundingClientRect();
+          pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+          raycaster.setFromCamera(pointerNDC, camera);
+          const hits = raycaster.intersectObject(puddingSurface);
+
+          if (hits.length > 0) {
+            const localPt = puddingRoot.worldToLocal(hits[0].point.clone());
+            const radialDist = Math.hypot(localPt.x, localPt.z);
+            if (radialDist <= 2.38) {
+              addToppingAt(localPt.x, localPt.z, currentFlowerType, currentColorHex);
+              triggerJiggle(0.055);
+            }
+          }
+        }
+      });
+
+      // Interaksi Tombol Pilihan Jenis Bunga
+      const toolLabelMap = {
+        rose: 'Mawar Mekar',
+        peony: 'Peony Kelopak',
+        blossom: 'Sakura Kecil',
+        leaf: 'Daun Matcha',
+        butterfly: 'Kupu-Kupu'
+      };
+
+      const typeButtons = document.querySelectorAll('[data-flower-type]');
+      const indicatorEl = document.getElementById('active-tool-indicator');
+
+      typeButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          typeButtons.forEach(function (b) {
+            b.classList.remove('is-active');
+          });
+          btn.classList.add('is-active');
+          currentFlowerType = btn.getAttribute('data-flower-type') || 'rose';
+
+          if (indicatorEl) {
+            indicatorEl.textContent = 'Bentuk: ' + (toolLabelMap[currentFlowerType] || 'Mawar');
+          }
+        });
+      });
+
+      // Interaksi Tombol Warna Kelopak
+      const colorButtons = document.querySelectorAll('[data-color]');
+      colorButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          colorButtons.forEach(function (b) {
+            b.classList.remove('is-active');
+          });
+          btn.classList.add('is-active');
+          currentColorHex = btn.getAttribute('data-color') || '#E498A3';
+        });
+      });
+
+      // Tombol Aksi Cepat (Goyangkan, Susun Buket, Urungkan, Bersihkan)
+      const btnJiggle = document.getElementById('btn-jiggle-pudding');
+      if (btnJiggle) {
+        btnJiggle.addEventListener('click', function () {
+          triggerJiggle(0.12);
+        });
+      }
+
+      const btnPreset = document.getElementById('btn-preset-bouquet');
+      if (btnPreset) {
+        btnPreset.addEventListener('click', function () {
+          populatePresetBouquet();
+        });
+      }
+
+      const btnUndo = document.getElementById('btn-undo-flower');
+      if (btnUndo) {
+        btnUndo.addEventListener('click', function () {
+          if (placedToppings.length > 0) {
+            const lastMesh = placedToppings.pop();
+            toppingsGroup.remove(lastMesh);
+            updateCounterUI();
+            triggerJiggle(0.03);
+          }
+        });
+      }
+
+      const btnClear = document.getElementById('btn-clear-flowers');
+      if (btnClear) {
+        btnClear.addEventListener('click', function () {
+          while (placedToppings.length > 0) {
+            const mesh = placedToppings.pop();
+            toppingsGroup.remove(mesh);
+          }
+          updateCounterUI();
+          triggerJiggle(0.05);
+        });
+      }
+
+      // Responsif saat ukuran layar berubah
+      window.addEventListener('resize', function () {
+        if (!stageEl) return;
+        const w = stageEl.clientWidth;
+        const h = stageEl.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      // Render Loop (Animasi Mekar Bunga & Efek Jiggle Puding)
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Animasi bunga mekar saat baru ditaruh
+        for (let i = animatingToppings.length - 1; i >= 0; i--) {
+          const item = animatingToppings[i];
+          item.current += (item.target - item.current) * 0.22;
+          item.mesh.scale.setScalar(item.current);
+          if (Math.abs(item.target - item.current) < 0.005) {
+            item.mesh.scale.setScalar(item.target);
+            animatingToppings.splice(i, 1);
+          }
+        }
+
+        // Animasi goyangan lembut (silky/jiggly pudding)
+        if (jiggleIntensity > 0.0005) {
+          jiggleTime += 0.28;
+          const sx = 1 + Math.sin(jiggleTime) * jiggleIntensity;
+          const sz = 1 + Math.cos(jiggleTime) * jiggleIntensity;
+          const sy = 1 - Math.sin(jiggleTime) * jiggleIntensity * 0.6;
+          puddingRoot.scale.set(sx, sy, sz);
+          puddingRoot.rotation.z = Math.sin(jiggleTime * 0.9) * jiggleIntensity * 0.45;
+          jiggleIntensity *= 0.93;
+        } else {
+          puddingRoot.scale.set(1, 1, 1);
+          puddingRoot.rotation.z = 0;
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    })();
+  </script>
+</body>
+</html>
